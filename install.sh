@@ -38,6 +38,7 @@ INSTALLORACLE() {
 
 import os
 import time
+from getpass import getuser
 
 try:
 	from mega import Mega
@@ -109,6 +110,17 @@ class InstallOracle:
 			'Seleccionar si deseamos que  el sistema gestor se inicie cuando inicie el sistema.'
 		]
 
+		self.bashrc = [
+			'export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe',
+			'export ORACLE_SID=XE',
+			'export NLS_LANG=`$ORACLE_HOME/bin/nls_lang.sh`',
+			'export ORACLE_BASE=/u01/app/oracle',
+			'export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH',
+			'export PATH=$ORACLE_HOME/bin:$PATH'
+		]
+
+		self.USER = getuser()
+
 		for i in data.split(';'):
 			if 'sudo pico /sbin/chkconfig' in i:
 				'''
@@ -146,6 +158,15 @@ class InstallOracle:
 
 				os.system('sudo /etc/init.d/oracle-xe configure')
 
+			elif 'pico ~/.bashrc' in i:
+
+				for m in self.bashrc:
+					os.system(m)
+
+			elif 'sudo usermod -a -G dba' in i:
+				compled = i + " " + self.USER
+				os.system(compled)
+
 			else:
 				os.system(i)
 
@@ -158,7 +179,7 @@ class InstallMega:
 
 
 	def instalarMega(self):
-		file = open(self.file_mega,'r'):
+		file = open(self.file_mega,'r')
 		data = file.read()
 
 		for i in data.split(';'):

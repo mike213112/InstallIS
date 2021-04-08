@@ -10,54 +10,11 @@ sudo service procps start;
 sudo sysctl -q fs.file-max;
 sudo pico /etc/rc2.d/S01shm_load;
 sudo chmod 755 /etc/rc2.d/S01shm_load;
-udo dpkg --install oracle-xe_11.2.0-2_amd64.deb;
-
-2.-Configuramos Oracle usando el comando:
-sudo /etc/init.d/oracle-xe configure 
-
-3.-Configuramos las variables de entorno editando nuestro archiv .bashrc :
-pico ~/.bashrc
-
-Agregamos las siguientes lineas hasta el final del archivo:
-export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe
-export ORACLE_SID=XE
-export NLS_LANG=`$ORACLE_HOME/bin/nls_lang.sh`
-export ORACLE_BASE=/u01/app/oracle
-export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH
-export PATH=$ORACLE_HOME/bin:$PATH
-
-Ejecutamos los cambios ejecutando nuestro perfil:
-. ~/.profile
-
-4.-Iniciamos Oracle 11gR2 XE:
+sudo dpkg --install oracle-xe_11.2.0-2_amd64.deb;
+sudo /etc/init.d/oracle-xe configure; 
+pico ~/.bashrc;
+. ~/.profile;
+sudo service oracle-xe start;
+sudo usermod -a -G dba;
 sudo service oracle-xe start
-
-5.-Agregamos un usuario YOURUSERNAME al grupo dba usando el comando:
-
-sudo usermod -a -G dba YOURUSERNAME
-
---- USO DEL COMAND SHELL DE ORACLE---
-
-1.-Iniciamos los servicios de Oracle XE 11gR2 server usando el comando:
-sudo service oracle-xe start
-
-2.-Iniciamos la linea de comando como el administrador del sistema:
 sqlplus sys as sysdba
-
-Ingresamos la contraseña que seleccionamos durante la instalacion.
-
-3.-Creamos una cuenta de usuario regular usando el comando SQL:
-create user USERNAME identified by PASSWORD;
-
-Reemplazamos USERNAME y PASSWORD con el usuario y contraseña que hayamos elejido. Es importante recordar el usuario y contraseña. Si tuvimos error al ejecutar el comando, entonces ejecutamos el siguiente comando SQL y reintentamos:
-alter database open resetlogs
-
-4.-Asignar privilegios a la cuenta de usuario usando el comando SQL:
-grant connect, resource to USERNAME;
-Reemplazamos USERNAME y PASSWORD con el usuario y contraseña que hayamos elejido. Es importante recordar el usuario y contraseña.
-
-5.-Salimos con el siquiente comando SQL:
-exit;
-
-6.-Iniciamos la linea de comando como un usuario regular usando el comando:
-sqlplus
